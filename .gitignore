@@ -1,0 +1,15 @@
+
+# built
+*.apk
+*.ap_
+
+# VM
+*.dex
+
+# class files
+*.class
+
+# generated
+bin/
+gen/
+
