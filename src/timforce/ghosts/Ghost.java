@@ -49,12 +49,11 @@ public class Ghost  {
 		
 	}
 	
-	
-	
+	// child ghost constructor
 	public Ghost(int screenWidth, int screenHeight, int bgColor, int posX, int posY, int parentGhostStartWidth, int parentGhostStartHeight, float parentGhostStartEyeRadius) {
 		this(screenWidth, screenHeight, bgColor);
-		this.width     = this.startWidth     = parentGhostStartWidth - 10;
-		this.height    = this.startHeight    = parentGhostStartHeight - 15;
+		this.width     = this.startWidth     = parentGhostStartWidth - 20;
+		this.height    = this.startHeight    = parentGhostStartHeight - 30;
 		this.eyeRadius = this.startEyeRadius = parentGhostStartEyeRadius - 0.5f;
 		// this.headHeight = this.startHeadHeight = parentGhostStartHead
 		
@@ -63,7 +62,7 @@ public class Ghost  {
 			gPaint.setColor(randomColor);
 			ensureEyeColorIsNotSameAsBodyColor(randomColor);
 		}
-		int randomOffset = (int) (Math.random() * 20);
+		int randomOffset = (int) (Math.random() * 100);
 		
 		if(Math.random() > 0.5) {
 			this.posX = posX + randomOffset;
@@ -221,7 +220,7 @@ public class Ghost  {
 			return true;
 		}
 		
-		if(numTimesTouched >= 3) {
+		if(numTimesTouched >= 2) {
 			// kill off if too small
 			return true;
 		} else {
@@ -259,7 +258,7 @@ public class Ghost  {
 	
 	
 	public boolean isBigEnoughToMakeChildren() {
-		if(width>35 && height > 50) {
+		if(width>40 && height > 50) {
 			return true;
 		} else {
 			return false;
