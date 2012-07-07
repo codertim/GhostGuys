@@ -5,11 +5,15 @@
     android:layout_height="fill_parent"
     >
 	<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:text="@string/hello"
     />
-	<Button android:id="@+id/start_button" android:text="Ghosts" android:layout_height="wrap_content" android:layout_weight="0.05" android:layout_width="208dp"></Button>
+	<Button android:id="@+id/start_button" 
+		android:text="Ghosts" 
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent">
+	</Button>
     
     
 </LinearLayout>
