@@ -30,11 +30,14 @@ public class Ghost  {
 	int stepsToGoBeforeChangingDirection = 10;
 	static final int headHeight = 30;
 	boolean isDead = false;
+	boolean isDying = false;
 	boolean isUseRandomColors = true;
+	int dyingCounter = 0;
 	int numTimesTouched = 0;
 	int startWidth = width;
 	int startHeight = height;
 	float startEyeRadius = eyeRadius;
+	boolean isJustDied = false;
 	
 	
 	
@@ -45,9 +48,8 @@ public class Ghost  {
 		this.bgColor = bgColor;
 		bgPaint.setColor(bgColor);
 		eyePaint.setColor(Color.BLUE);
-		
-		
 	}
+	
 	
 	// child ghost constructor
 	public Ghost(int screenWidth, int screenHeight, int bgColor, int posX, int posY, int parentGhostStartWidth, int parentGhostStartHeight, float parentGhostStartEyeRadius) {
@@ -62,20 +64,25 @@ public class Ghost  {
 			gPaint.setColor(randomColor);
 			ensureEyeColorIsNotSameAsBodyColor(randomColor);
 		}
-		int randomOffset = (int) (Math.random() * 100);
+		int randomOffset = (int) (Math.random() * 10);
 		
+		this.posX = posX;
+		this.posY = posY;
 		if(Math.random() > 0.5) {
-			this.posX = posX + randomOffset;
-			this.posY = posY + randomOffset;			
+			// this.posX = posX + randomOffset;
+			// this.posY = posY + randomOffset;			
 		} else {
-			this.posX = posX - randomOffset;
-			this.posY = posY - randomOffset;
+			// this.posX = posX - randomOffset;
+			// this.posY = posY - randomOffset;
 		}
 	}
 	
 
 	public void drawOnCanvas(Canvas canvas) {
-		if(!isDead) {
+		Log.d(TAG, "Canvas Width = " + canvas.getWidth() + "     Height = " + canvas.getHeight());
+		Log.d(TAG, "Canvas Density = " + canvas.getDensity());
+		
+		if(!isDead && !isDying) {
 			// body
 			canvas.drawRect(posX-width/2, posY-height, posX + width/2, posY, gPaint);
 			
@@ -90,6 +97,25 @@ public class Ghost  {
 			// eyes
 			canvas.drawCircle(posX-eyeOffset, posY-height-3, eyeRadius, eyePaint);
 			canvas.drawCircle(posX+eyeOffset, posY-height-3, eyeRadius, eyePaint);
+		} else if(!isDead && isDying) {
+			// almost dead
+			// TODO: change color of eyes or body when dead
+			
+			// body
+			canvas.drawRect(posX-width/2, posY-height, posX + width/2, posY, gPaint);
+			
+			// bottom
+			RectF bottomOval = new RectF(posX - width/2, posY-bottomCurvature, posX + width/2, posY+bottomCurvature);
+			canvas.drawOval(bottomOval, bgPaint);
+			
+			// head
+			RectF oval = new RectF(posX-width/2,posY-height-headHeight,posX+width/2,posY-height+headHeight);
+			canvas.drawArc(oval, 180f, 180f, false, gPaint);
+			
+			// eyes
+			canvas.drawCircle(posX-eyeOffset, posY-height-3, eyeRadius, eyePaint);
+			canvas.drawCircle(posX+eyeOffset, posY-height-3, eyeRadius, eyePaint);
+		
 		}
 	}
 	
@@ -114,9 +140,24 @@ public class Ghost  {
 	
 	
 	public void incrementPosition() {
+		if(isDead) {
+			return;
+		}
+		
 		stepsToGoBeforeChangingDirection--;
 		if(stepsToGoBeforeChangingDirection <= 0) {
 			changeDirection();
+		}
+		
+		if(isDying) {
+			width += 20;
+			height -= 10;
+			dyingCounter++;
+			Log.d(TAG, "Dying counter = " + dyingCounter);
+			if(dyingCounter > 5) {
+				this.die();
+			}
+
 		}
 		
 		if(isVerticalMovement) {
@@ -193,35 +234,27 @@ public class Ghost  {
 	
 	
 	// handle click internally
-	public boolean reactToClicked() {
-		boolean isStateChangedToDead = false;
+	// if enough clicks on ghost, start dying process
+	public void reactToClicked() {
 		
 		if(isDead) {
-			return false;
+			return;
 		}
 		
 		numTimesTouched++;
-		// height    -= 3;
-		// width     -= 2;
-		// eyeRadius -= 0.5;
 		changeColor();
-		
-		if(isTimeToDie()) {
-			isStateChangedToDead = true;
-			this.die();   // so sad
-		}
-		
-		return isStateChangedToDead;
-	}
-	
-	// test if small enough to remove
-	private boolean isTimeToDie() {
-		if(isDead) {
-			return true;
-		}
-		
+				
 		if(numTimesTouched >= 2) {
 			// kill off if too small
+			isDying = true;
+		} 
+		
+	}
+	
+	
+	public boolean getIsJustDied() {
+		if(isJustDied) {
+			isJustDied = false;
 			return true;
 		} else {
 			return false;
@@ -230,7 +263,8 @@ public class Ghost  {
 	
 	
 	private void die() {
-		isDead = true;
+		isDead     = true;
+		isJustDied = true;
 		Log.d(TAG, "#die - Time to die!");
 	}
 	

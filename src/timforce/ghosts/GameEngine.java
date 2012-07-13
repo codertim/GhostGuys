@@ -23,7 +23,11 @@ public class GameEngine extends Activity {
 	static final int screenWidth = 500;
 	static int bgColor = Color.BLACK;
 	static final Ghost [] ghosts = new Ghost[10];
+	static Ghost ghost = null;
 	static GameEngine gameEngine = null;
+	static Moon moon = null;
+	static BackgroundEyes backgroundEyes = null;
+	final static int ghostSplitApartOffset = 50;
 	
 	
     @Override
@@ -32,14 +36,17 @@ public class GameEngine extends Activity {
         // setContentView(R.layout.game_engine);
         setContentView(new GraphicsView(this));
         gameEngine = this;
+
     }
     
     
-    static public class GraphicsView extends View {
-    	Ghost ghost = null;
+     public class GraphicsView extends View {
     	public GraphicsView(Context context) {
     		super(context);
+    		Log.d(TAG, "CONSTRUCTOR: GraphicsView");
     		ghost = new Ghost(screenWidth, screenHeight, bgColor);
+    		moon  = new Moon(screenWidth, bgColor);
+    		backgroundEyes = new BackgroundEyes();
     	}
     	
     	
@@ -73,37 +80,20 @@ public class GameEngine extends Activity {
     	
     	
     	private void drawObjects(Canvas canvas) {
+    		drawBackgroundObjects(canvas);
     		ghost.drawOnCanvas(canvas);
     		for(int i=0; i < ghosts.length; i++) {
     			if(ghosts[i] != null)
     				ghosts[i].drawOnCanvas(canvas);
     		}
-    		drawBackgroundObjects(canvas);
     	}
     	
     	
     	
     	private void drawBackgroundObjects(Canvas canvas) {
-    		int moonX = screenWidth - 75;
-    		int moonY = 5;
-    		int moonWidth = 50;
-    		int moonHeight = 50;
-    		int moonShadowOffsetX = 5;
-    		int moonShadowOffsetY = -5;
-    		
+    		moon.draw(canvas);
+    		backgroundEyes.drawSelf(canvas);
     		// draw visible moon
-    		RectF moonRectF = new RectF(moonX, moonY, (moonX + moonWidth), (moonY + moonHeight));
-    		Paint moonPaint = new Paint();
-    		moonPaint.setColor(Color.argb(255, 255, 255, 100));
-    		moonPaint.setAntiAlias(true);
-    		canvas.drawArc(moonRectF, 0f, 360f, true, moonPaint);
-    		
-    		// draw moon shadow
-    		RectF moonShadowRectF = new RectF(moonX + moonShadowOffsetX, moonY + moonShadowOffsetY, (moonX + moonWidth + moonShadowOffsetX), (moonY + moonHeight + moonShadowOffsetY));
-    		Paint moonShadowPaint = new Paint();
-    		moonShadowPaint.setColor(bgColor);
-    		moonShadowPaint.setAntiAlias(true);
-    		canvas.drawArc(moonShadowRectF, 0, 360f, true, moonShadowPaint);
     	}
     	
     	
@@ -111,10 +101,23 @@ public class GameEngine extends Activity {
     	private void updateObjects() {
     		// move objects TODO
     		ghost.incrementPosition();
+			boolean hasGhostJustDied = false;
+			hasGhostJustDied = ghost.getIsJustDied();
+			if(hasGhostJustDied) {
+				handleGhostDeath(ghost);
+			}
+
     		// TODO: set dead ghosts to null
     		for(int i=0; i < ghosts.length; i++) {
-    			if(ghosts[i] != null)
+    			if(ghosts[i] != null) {
     				ghosts[i].incrementPosition();
+    				boolean hasGhostJustDied2 = false;
+    				hasGhostJustDied2 = ghosts[i].getIsJustDied();
+    				if(hasGhostJustDied2) {
+    					handleGhostDeath(ghosts[i]);
+    				}
+    			}
+
     		}
     	}
     	
@@ -123,24 +126,21 @@ public class GameEngine extends Activity {
     	private void checkIfObjectsClicked(MotionEvent e) {
     		if(ghost.isClicked(e)) {
     			Log.d(TAG, "#checkIfObjectsClicked - Clicked = TRUE");
-    			boolean hasGhostJustDied = false;
-    			hasGhostJustDied = ghost.reactToClicked();
-    			if(hasGhostJustDied) {
-    				handleGhostDeath(ghost);
-    			}
+				ghost.reactToClicked();
     		}
     		
     		int counter =0;
     		for(Ghost ghost : ghosts) {
     			if( (ghost != null) && (ghost.isClicked(e)) ) {
-        			boolean hasGhostJustDied = false;
-        			hasGhostJustDied = ghost.reactToClicked();
+        			ghost.reactToClicked();
+        			/*  TODO: move this somewhere else
         			if(hasGhostJustDied) {
         				handleGhostDeath(ghost);
         				ghost = null;
         				ghosts[counter] = null;
         				break;
-        			}    				
+        			}    		
+        			*/		
     			}
     			counter++;
     		}
@@ -165,12 +165,18 @@ public class GameEngine extends Activity {
     	
     	
     	private void makeNewGhostsWhenGhostDies(int posX, int posY, int deadGhostStartWidth, int deadGhostStartHeight, float deadGhostStartEyeRadius) {
-    		for(int i=0 ; i < 2; i++) {
-    			int indexEmptyGhost = findIndexEmptyGhost();
-    			if(indexEmptyGhost > -1) {
-    	    		ghosts[indexEmptyGhost] = new Ghost(screenWidth, screenHeight, bgColor, posX, posY, deadGhostStartWidth, deadGhostStartHeight, deadGhostStartEyeRadius);
-    			}
+    		// first new child ghost
+    		int indexEmptyGhost1 = findIndexEmptyGhost();
+    		if(indexEmptyGhost1 > -1) {
+    	    	ghosts[indexEmptyGhost1] = new Ghost(screenWidth, screenHeight, bgColor, posX-ghostSplitApartOffset, posY, deadGhostStartWidth, deadGhostStartHeight, deadGhostStartEyeRadius);
     		}
+    		
+    		// second new child ghost
+    		int indexEmptyGhost2 = findIndexEmptyGhost();
+    		if(indexEmptyGhost2 > -1) {
+    	    	ghosts[indexEmptyGhost2] = new Ghost(screenWidth, screenHeight, bgColor, posX+ghostSplitApartOffset, posY, deadGhostStartWidth, deadGhostStartHeight, deadGhostStartEyeRadius);
+    		}
+
     	}
     	
     	
@@ -194,8 +200,8 @@ public class GameEngine extends Activity {
     		if(mPlayer != null) {
     			mPlayer.release();
     		}
-    		gameEngine.setVolumeControlStream(AudioManager.STREAM_MUSIC);
     		mPlayer = MediaPlayer.create(gameEngine.getBaseContext(), R.raw.balloon_burst_05);
+    		gameEngine.setVolumeControlStream(AudioManager.STREAM_MUSIC);
     		// mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     		
     		try {
