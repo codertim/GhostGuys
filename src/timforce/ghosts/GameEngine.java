@@ -120,6 +120,8 @@ public class GameEngine extends Activity {
 
     		}
     		
+    		backgroundEyes.incrementPosition();
+    		
     		sweepUpDeadGhosts();
     	}
     	
@@ -157,6 +159,8 @@ public class GameEngine extends Activity {
     			}
     			counter++;
     		}
+    		
+    		backgroundEyes.handleClick(e);
     	}
     	
     	
