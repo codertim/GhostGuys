@@ -10,7 +10,7 @@ public class BackgroundEyes {
 	private static final String TAG = "BackgroundEyes";
 	final static private Paint eyesPaint = new Paint();
 	final private static float MIN_RADIUS = 1.0f;
-	private static final int eyeOffset = 2;
+	private static final int eyeOffset = 4;
 	private static final int NUM_EYES = 10;
 	private Point [] points = new Point[NUM_EYES];
 	private float  [] radii = new float[NUM_EYES];   // allow eyes to have separate raidus
