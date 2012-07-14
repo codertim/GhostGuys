@@ -119,8 +119,21 @@ public class GameEngine extends Activity {
     			}
 
     		}
+    		
+    		sweepUpDeadGhosts();
     	}
     	
+    	
+    	private void sweepUpDeadGhosts() {
+    		for(int i=0; i < ghosts.length; i++) {
+    			if(ghosts[i] != null) {
+    				if(ghosts[i].isDead) {
+    					// clear space for new ghost
+    					ghosts[i] = null;
+    				}
+    			}
+    		}
+    	}
     	
     	
     	private void checkIfObjectsClicked(MotionEvent e) {
