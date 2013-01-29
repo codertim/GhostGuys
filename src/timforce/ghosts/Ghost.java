@@ -38,6 +38,7 @@ public class Ghost  {
 	int startHeight = height;
 	float startEyeRadius = eyeRadius;
 	boolean isJustDied = false;
+	int drawCounter = 0;
 	
 	
 	
@@ -79,8 +80,11 @@ public class Ghost  {
 	
 
 	public void drawOnCanvas(Canvas canvas) {
-		Log.d(TAG, "Canvas Width = " + canvas.getWidth() + "     Height = " + canvas.getHeight());
-		Log.d(TAG, "Canvas Density = " + canvas.getDensity());
+		drawCounter++;
+		if((drawCounter % 100) == 0) {
+			Log.d(TAG, "Canvas Width = " + canvas.getWidth() + "     Height = " + canvas.getHeight());
+			Log.d(TAG, "Canvas Density = " + canvas.getDensity());
+		}
 		
 		if(!isDead && !isDying) {
 			// body

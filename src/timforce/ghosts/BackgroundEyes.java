@@ -14,7 +14,9 @@ public class BackgroundEyes {
 	private static final int eyeOffset = 4;
 	private static final int NUM_EYES = 10;
 	private Point [] points = new Point[NUM_EYES];
-	private float  [] radii = new float[NUM_EYES];   // allow eyes to have separate raidus
+	private static boolean [] isEyesActive = new boolean[NUM_EYES];
+	private static boolean [] eyesJustPopped = new boolean[NUM_EYES];
+	private float  [] radii = new float[NUM_EYES];   // allow eyes to have separate radius
 	private static int eyeCounter = 0;
 	private static int eyesBigCounters [] = new int[NUM_EYES];
 	private static final int moveEyeAmount = 3;
@@ -25,6 +27,18 @@ public class BackgroundEyes {
 	
 	public BackgroundEyes() {
 		eyesPaint.setColor(Color.RED);
+		
+		// initialize eyes to active
+		for(int i=0; i < isEyesActive.length; i++) {
+			isEyesActive[i] = true;
+		}
+	}
+	
+	
+	private void popEyes(int eyesIndex) {
+		// pop means to set particular eye to inactive
+		isEyesActive[eyesIndex]   = false;
+		eyesJustPopped[eyesIndex] = true;
 	}
 	
 	
@@ -38,10 +52,13 @@ public class BackgroundEyes {
 			if(shouldShowEye(i)) {
 				// draw all eyes except one of them
 				// even then, only 10% chance of not drawing
-				if(eyesBigCounters[i] > 0) {
-					canvas.drawCircle(points[i].x - eyeOffset - 10, points[i].y, radii[i] + 10, eyesPaint);
-					canvas.drawCircle(points[i].x + eyeOffset + 10, points[i].y, radii[i] + 10, eyesPaint);
-					eyesBigCounters[i]--;
+				if(eyesBigCounters[i] > 10) {
+					popEyes(i);
+				} else if(eyesBigCounters[i] > 0) {
+					int counter = eyesBigCounters[i];
+					canvas.drawCircle(points[i].x - eyeOffset - (counter*20), points[i].y, radii[i] + (counter*20), eyesPaint);
+					canvas.drawCircle(points[i].x + eyeOffset + (counter*20), points[i].y, radii[i] + (counter*20), eyesPaint);
+					eyesBigCounters[i]++;
 				} else {
 					// draw normal size
 					canvas.drawCircle(points[i].x - eyeOffset, points[i].y, radii[i], eyesPaint);
@@ -54,6 +71,11 @@ public class BackgroundEyes {
 	
 	
 	private boolean shouldShowEye(int i) {
+		if(!isEyesActive[i] ) {
+			// early return - when not active, do not show
+			return false;
+		}
+		
 		if(i != eyeCounter) {
 			return true;
 		}
@@ -78,6 +100,7 @@ public class BackgroundEyes {
 				points[randomEyesIndex].x += moveEyeAmount;
 			} else {
 				points[randomEyesIndex].x -= moveEyeAmount;
+				
 
 			}
 			
@@ -140,17 +163,51 @@ public class BackgroundEyes {
 	} 
 	
 	
+	
 	public void handleClick(MotionEvent e) {
-		Point currentPoint = null;
+		Point   currentPoint  = null;
+		
 		for(int i=0; i < points.length; i++) {
 			currentPoint = points[i];
 			if( (currentPoint.x > e.getX()-20) && (currentPoint.x < e.getX() + 20) ) {
 				if( (currentPoint.y > e.getY() - 20) && (currentPoint.y < e.getY() + 20) ) {
-					eyesBigCounters[i] = 5;
+					eyesBigCounters[i] = 1;
 					break;
 				}
 			}
 		}
+		
+	}
+	
+	
+	
+	public boolean isAnyAboutToPop() {
+		boolean isAboutToPop = false;
+		
+		for(int i=0; i < NUM_EYES; i++) {
+			if(eyesBigCounters[i] == 5) {
+				isAboutToPop = true;
+				break;
+			}
+		}
+		
+		return isAboutToPop;
+	}
+	
+	
+	
+	public boolean isAnyJustPopped() {
+		boolean isPopped = false;
+		
+		for(int i=0; i < NUM_EYES; i++) {
+			if(eyesJustPopped[i]) {
+				isPopped = true;
+				eyesJustPopped[i] = false;
+				break;
+			}
+		}
+		
+		return isPopped;
 	}
 }
 

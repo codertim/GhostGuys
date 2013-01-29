@@ -7,6 +7,9 @@
 	<TextView  
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" 
+    	android:paddingBottom="40dip"
+    	android:paddingLeft="10dip"
+    	android:paddingTop="20dip"
     	android:text="@string/hello"
     />
 	<Button android:id="@+id/start_button" 
@@ -14,6 +17,5 @@
 		android:layout_height="wrap_content" 
 		android:layout_width="fill_parent">
 	</Button>
-    
-    
+     
 </LinearLayout>

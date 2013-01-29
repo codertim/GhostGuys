@@ -121,6 +121,9 @@ public class GameEngine extends Activity {
     		}
     		
     		backgroundEyes.incrementPosition();
+    		if(backgroundEyes.isAnyAboutToPop()) {
+    			playSoftSoundWhenPop();
+    		}
     		
     		sweepUpDeadGhosts();
     	}
@@ -172,7 +175,7 @@ public class GameEngine extends Activity {
     		int deadGhostStartHeight      = ghost.getStartHeight();
     		float deadGhostStartEyeRadius = ghost.getStartEyeRadius();
     		Log.d(TAG, "#handleGhostDeat - deadGhostPosX=" + deadGhostPosX);
-    		playSoundWhenDie();
+    		playSoundWhenPop();
     		if(ghost.isBigEnoughToMakeChildren()) {
     			makeNewGhostsWhenGhostDies(deadGhostPosX, deadGhostPosY, deadGhostStartWidth, deadGhostStartHeight, deadGhostStartEyeRadius);
     		}
@@ -209,11 +212,12 @@ public class GameEngine extends Activity {
     			}
     		}
     		
+    		Log.d(TAG, "findIndexEmptyGhost - ghost died - index for next ghost = " + indexEmptyGhost);
     		return indexEmptyGhost;
     	}
     	
     	
-    	private void playSoundWhenDie() {
+    	private void playSoundWhenPop() {
     		if(mPlayer != null) {
     			mPlayer.release();
     		}
@@ -230,7 +234,26 @@ public class GameEngine extends Activity {
     		}
 
     	}
+    	
+    	
+    	private void playSoftSoundWhenPop() {
+    		if(mPlayer != null) {
+    			mPlayer.release();
+    		}
+    		mPlayer = MediaPlayer.create(gameEngine.getBaseContext(), R.raw.cork);
+    		gameEngine.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    		// mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     		
+    		try {
+    			// mPlayer.reset();   mPlayer.prepare();
+    			mPlayer.start();
+    			// mPlayer.release();
+    		} catch(Exception e) {
+    			Log.e(TAG, "ERROR tring to play baloon pop - message=" + e.getMessage());
+    		}
+
+    	}
+     		
     }
 
 
