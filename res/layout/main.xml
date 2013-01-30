@@ -1,21 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="@color/darkOrange"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
 	<TextView  
-    	android:layout_width="fill_parent" 
-    	android:layout_height="wrap_content" 
+		android:layout_gravity="center"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
     	android:paddingBottom="40dip"
-    	android:paddingLeft="10dip"
     	android:paddingTop="20dip"
     	android:text="@string/hello"
+		android:textColor="@color/blueComplementary"
+		android:textSize="30sp"
+		android:textStyle="bold|italic"		
     />
 	<Button android:id="@+id/start_button" 
-		android:text="Ghosts" 
+		android:text="Smash Ghosts!" 
+		android:textColor="@color/blueComplementary"
+		android:layout_gravity="center"
 		android:layout_height="wrap_content" 
-		android:layout_width="fill_parent">
+		android:layout_width="wrap_content"
+		android:paddingLeft="50dp"
+		android:paddingRight="50dp"
+		android:paddingTop="10dp"
+		>
+		
 	</Button>
-     
+	
+    <ImageView
+    	android:id="@+id/greenghost"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:paddingBottom="5dp"
+    	android:paddingLeft="40dp"
+    	android:paddingTop="50dp"
+    	android:src="@drawable/green_ghost"
+    >
+    </ImageView>
+    
+    <ImageView
+    	android:id="@+id/yellowghost"
+    	android:layout_gravity="right"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:paddingBottom="5dp"
+    	android:paddingRight="50dp"
+    	android:paddingTop="5dp"
+    	android:src="@drawable/yellow_ghost"
+    >
+    </ImageView>
+       
+    <ImageView
+    	android:id="@+id/blueghost"
+    	android:layout_gravity="center"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:paddingBottom="5dp"
+    	android:paddingTop="5dp"
+    	android:src="@drawable/blue_ghost"
+    >
+    </ImageView>
+    
 </LinearLayout>
