@@ -38,7 +38,7 @@ public class Ghost  {
 	int startHeight = height;
 	float startEyeRadius = eyeRadius;
 	boolean isJustDied = false;
-	int drawCounter = 0;
+	private static int drawCounter = 0;
 	
 	
 	
@@ -55,8 +55,8 @@ public class Ghost  {
 	// child ghost constructor
 	public Ghost(int screenWidth, int screenHeight, int bgColor, int posX, int posY, int parentGhostStartWidth, int parentGhostStartHeight, float parentGhostStartEyeRadius) {
 		this(screenWidth, screenHeight, bgColor);
-		this.width     = this.startWidth     = parentGhostStartWidth - 20;
-		this.height    = this.startHeight    = parentGhostStartHeight - 30;
+		this.width     = this.startWidth     = parentGhostStartWidth - 15;   // 20 works good
+		this.height    = this.startHeight    = parentGhostStartHeight - 20;   // 30 works good
 		this.eyeRadius = this.startEyeRadius = parentGhostStartEyeRadius - 0.5f;
 		// this.headHeight = this.startHeadHeight = parentGhostStartHead
 		
@@ -81,7 +81,7 @@ public class Ghost  {
 
 	public void drawOnCanvas(Canvas canvas) {
 		drawCounter++;
-		if((drawCounter % 100) == 0) {
+		if((drawCounter % 2000) == 0) {
 			Log.d(TAG, "Canvas Width = " + canvas.getWidth() + "     Height = " + canvas.getHeight());
 			Log.d(TAG, "Canvas Density = " + canvas.getDensity());
 		}
@@ -296,7 +296,7 @@ public class Ghost  {
 	
 	
 	public boolean isBigEnoughToMakeChildren() {
-		if(width>40 && height > 50) {
+		if(width>30 && height > 40) {
 			return true;
 		} else {
 			return false;

@@ -23,11 +23,13 @@ public class GameEngine extends Activity {
 	static final int screenWidth = 500;
 	static int bgColor = Color.BLACK;
 	static final Ghost [] ghosts = new Ghost[10];
-	static Ghost ghost = null;
+	static Ghost firstGhost = null;   // TODO: determine if this is really needed
 	static GameEngine gameEngine = null;
 	static Moon moon = null;
 	static BackgroundEyes backgroundEyes = null;
 	final static int ghostSplitApartOffset = 50;
+	static int updateCounter = 0;
+	
 	
 	
     @Override
@@ -44,7 +46,9 @@ public class GameEngine extends Activity {
     	public GraphicsView(Context context) {
     		super(context);
     		Log.d(TAG, "CONSTRUCTOR: GraphicsView");
-    		ghost = new Ghost(screenWidth, screenHeight, bgColor);
+    		// ghost = new Ghost(screenWidth, screenHeight, bgColor);
+    		ghosts[0] = new Ghost(screenWidth, screenHeight, bgColor);
+    		firstGhost = ghosts[0];
     		moon  = new Moon(screenWidth, bgColor);
     		backgroundEyes = new BackgroundEyes();
     	}
@@ -81,7 +85,7 @@ public class GameEngine extends Activity {
     	
     	private void drawObjects(Canvas canvas) {
     		drawBackgroundObjects(canvas);
-    		ghost.drawOnCanvas(canvas);
+    		
     		for(int i=0; i < ghosts.length; i++) {
     			if(ghosts[i] != null)
     				ghosts[i].drawOnCanvas(canvas);
@@ -99,15 +103,9 @@ public class GameEngine extends Activity {
     	
     	
     	private void updateObjects() {
-    		// move objects TODO
-    		ghost.incrementPosition();
-			boolean hasGhostJustDied = false;
-			hasGhostJustDied = ghost.getIsJustDied();
-			if(hasGhostJustDied) {
-				handleGhostDeath(ghost);
-			}
-
-    		// TODO: set dead ghosts to null
+    		updateCounter++;
+    		
+    		// update ghosts in array and check for death
     		for(int i=0; i < ghosts.length; i++) {
     			if(ghosts[i] != null) {
     				ghosts[i].incrementPosition();
@@ -126,7 +124,28 @@ public class GameEngine extends Activity {
     		}
     		
     		sweepUpDeadGhosts();
+    		
+    		int countGhosts = getGhostCount();
+    		if( (updateCounter % 50) == 0) {
+    			// occasionally show active ghost count
+    			Log.d(TAG, "updateObject - current active ghost count = " + countGhosts);
+    		}
     	}
+    	
+    	
+    	
+    	private int getGhostCount() {
+    		int ghostCount = 0;
+    		
+    		for(int i=0; i < ghosts.length; i++) {
+    			if(ghosts[i] != null) {
+    				ghostCount++;
+    			}
+    		}
+    		
+    		return ghostCount;
+    	}
+    	
     	
     	
     	private void sweepUpDeadGhosts() {
@@ -141,12 +160,8 @@ public class GameEngine extends Activity {
     	}
     	
     	
-    	private void checkIfObjectsClicked(MotionEvent e) {
-    		if(ghost.isClicked(e)) {
-    			Log.d(TAG, "#checkIfObjectsClicked - Clicked = TRUE");
-				ghost.reactToClicked();
-    		}
-    		
+    	
+    	private void checkIfObjectsClicked(MotionEvent e) {    		
     		int counter =0;
     		for(Ghost ghost : ghosts) {
     			if( (ghost != null) && (ghost.isClicked(e)) ) {
