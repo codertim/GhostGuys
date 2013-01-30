@@ -134,6 +134,7 @@ public class GameEngine extends Activity {
     	
     	
     	
+    	// count all active ghosts
     	private int getGhostCount() {
     		int ghostCount = 0;
     		
@@ -148,6 +149,7 @@ public class GameEngine extends Activity {
     	
     	
     	
+    	// check if ghost has just been flagged for death and set to null
     	private void sweepUpDeadGhosts() {
     		for(int i=0; i < ghosts.length; i++) {
     			if(ghosts[i] != null) {
@@ -251,6 +253,8 @@ public class GameEngine extends Activity {
     	}
     	
     	
+    	
+    	// sound for smaller objects, such as background eyes
     	private void playSoftSoundWhenPop() {
     		if(mPlayer != null) {
     			mPlayer.release();

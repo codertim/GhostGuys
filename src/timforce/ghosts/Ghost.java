@@ -49,14 +49,16 @@ public class Ghost  {
 		this.bgColor = bgColor;
 		bgPaint.setColor(bgColor);
 		eyePaint.setColor(Color.BLUE);
+		this.posX += (int) (Math.random() * 200);
+		this.posY += (int) (Math.random() * 200);
 	}
 	
 	
 	// child ghost constructor
 	public Ghost(int screenWidth, int screenHeight, int bgColor, int posX, int posY, int parentGhostStartWidth, int parentGhostStartHeight, float parentGhostStartEyeRadius) {
 		this(screenWidth, screenHeight, bgColor);
-		this.width     = this.startWidth     = parentGhostStartWidth - 15;   // 20 works good
-		this.height    = this.startHeight    = parentGhostStartHeight - 20;   // 30 works good
+		this.width     = this.startWidth     = parentGhostStartWidth - 15;   // 20, 15 work well
+		this.height    = this.startHeight    = parentGhostStartHeight - 20;   // 30, 20 work well
 		this.eyeRadius = this.startEyeRadius = parentGhostStartEyeRadius - 0.5f;
 		// this.headHeight = this.startHeadHeight = parentGhostStartHead
 		
