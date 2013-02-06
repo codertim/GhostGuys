@@ -1,33 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:background="@color/darkOrange"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-	<TextView  
-		android:layout_gravity="center"
+    
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:background="@color/darkOrange"
+    	android:orientation="vertical"
+    	android:paddingLeft="50dp"
     	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:paddingBottom="40dip"
-    	android:paddingTop="20dip"
-    	android:text="@string/hello"
-		android:textColor="@color/blueComplementary"
-		android:textSize="30sp"
-		android:textStyle="bold|italic"		
-    />
-	<Button android:id="@+id/start_button" 
-		android:text="Smash Ghosts!" 
-		android:textColor="@color/darkOrange"
-		android:layout_gravity="center"
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content"
-		android:paddingLeft="50dp"
-		android:paddingRight="50dp"
-		android:paddingTop="10dp"
-		>
-		       
-	</Button>
+    	android:layout_height="wrap_content"    
+   		>
+		<TextView  
+			android:layout_gravity="center"
+  		  	android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:paddingBottom="40dip"
+    		android:paddingTop="20dip"
+    		android:text="@string/hello"
+			android:textColor="@color/blueComplementary"
+			android:textSize="30sp"
+			android:textStyle="bold"		
+    	/>
+		<Button android:id="@+id/start_button" 
+			android:text="Smash Ghosts!" 
+			android:textColor="@color/darkOrange"
+			android:layout_gravity="center"
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content"
+			android:paddingLeft="50dp"
+			android:paddingRight="50dp"
+			android:paddingTop="10dp"
+			>	       
+		</Button>
+	</LinearLayout>
 	
     <ImageView
     	android:id="@+id/greenghost"
@@ -46,8 +54,9 @@
     	android:layout_height="wrap_content"
     	android:layout_width="wrap_content"
     	android:paddingBottom="5dp"
+    	android:paddingLeft="20dp"
     	android:paddingRight="50dp"
-    	android:paddingTop="5dp"
+    	android:paddingTop="15dp"
     	android:src="@drawable/yellow_ghost"
     >
     </ImageView>

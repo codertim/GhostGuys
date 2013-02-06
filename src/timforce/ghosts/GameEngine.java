@@ -1,7 +1,9 @@
 package timforce.ghosts;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,8 +13,16 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.util.Log;
 
 
 public class GameEngine extends Activity {
@@ -29,26 +39,81 @@ public class GameEngine extends Activity {
 	static BackgroundEyes backgroundEyes = null;
 	final static int ghostSplitApartOffset = 50;
 	static int updateCounter = 0;
+	static boolean isGameLevelDone = false;
+	int levelDoneCounter = 0;
 	
 	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	Log.d(TAG, "GOT HERE 1");
         super.onCreate(savedInstanceState);
+    	Log.d(TAG, "GOT HERE 2");
+    	
+    	isGameLevelDone = false;
+    	updateCounter = 0;
+		ghosts[0] = new Ghost(screenWidth, screenHeight, bgColor);
+		firstGhost = ghosts[0];
+
         // setContentView(R.layout.game_engine);
         setContentView(new GraphicsView(this));
+        
         gameEngine = this;
 
     }
     
     
+    private void openEndOfGameDialog() {
+		Log.d(TAG, "Starting openEndOfGameDialog ... ");
+
+    	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    	alertDialogBuilder.setTitle("Continue?");
+    	// alertDialogBuilder.setView(findViewById(R.id.game_over_layout_view));
+    	alertDialogBuilder.setItems(null, 
+    			new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "dialog click which = " + which);
+					}
+				}
+    	);
+    	LayoutInflater inflater = getLayoutInflater();
+    	View alertLayout = inflater.inflate(R.layout.game_level_over, (ViewGroup) getCurrentFocus());
+    	alertDialogBuilder.setView(alertLayout);
+    	
+        ImageButton exitImageButton = (ImageButton) alertLayout.findViewById(R.id.red_exit_button);
+        exitImageButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "clicked exit on dialog");
+				// Intent i = new Intent(gameEngine, GhostGuysActivity.class);
+				// startActivity(i);
+			}
+        });
+    	
+        ImageButton startImageButton = (ImageButton) alertLayout.findViewById(R.id.green_start_button);
+        startImageButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "clicked start on dialog");
+				Intent i = new Intent(gameEngine, GameEngine.class);
+				startActivity(i);
+			}
+        });
+   
+    	alertDialogBuilder.show();
+    }
+    
+    
+    
      public class GraphicsView extends View {
+    	Context context = null;
+    	
     	public GraphicsView(Context context) {
     		super(context);
+    		this.context = context;
     		Log.d(TAG, "CONSTRUCTOR: GraphicsView");
     		// ghost = new Ghost(screenWidth, screenHeight, bgColor);
-    		ghosts[0] = new Ghost(screenWidth, screenHeight, bgColor);
-    		firstGhost = ghosts[0];
     		moon  = new Moon(screenWidth, bgColor);
     		backgroundEyes = new BackgroundEyes();
     	}
@@ -69,11 +134,15 @@ public class GameEngine extends Activity {
     	
     	
     	protected void onDraw(Canvas canvas) {
-    		startGame(canvas);
+    		if(!isGameLevelDone) {
+    			doGameLoop(canvas);
+    		} else {
+    			Log.d(TAG, "onDraw - game level is done, so not doing game loop");
+    		}
     	}
    	
     	
-    	private void startGame(Canvas canvas) {
+    	private void doGameLoop(Canvas canvas) {
 			canvas.drawColor(bgColor);
 			updateObjects();
 			drawObjects(canvas);
@@ -118,6 +187,8 @@ public class GameEngine extends Activity {
 
     		}
     		
+    		moon.update();
+    		
     		backgroundEyes.incrementPosition();
     		if(backgroundEyes.isAnyAboutToPop()) {
     			playSoftSoundWhenPop();
@@ -128,7 +199,19 @@ public class GameEngine extends Activity {
     		int countGhosts = getGhostCount();
     		if( (updateCounter % 50) == 0) {
     			// occasionally show active ghost count
-    			Log.d(TAG, "updateObject - current active ghost count = " + countGhosts);
+    			Log.d(TAG, "updateObject - current active ghost count = " + countGhosts + "   updateCounter=" + updateCounter);
+    		}
+    		
+    		if(countGhosts == 0) {
+    			levelDoneCounter++;
+    		}
+    		
+    		if(levelDoneCounter == 1) {
+    			// ((ViewGroup) this.getParent()).removeView(this);
+    			// ((ViewGroup) this.getParent()).addView(R.layout.game_over);
+    			isGameLevelDone = true;
+    	        openEndOfGameDialog();
+
     		}
     	}
     	
@@ -168,6 +251,7 @@ public class GameEngine extends Activity {
     		for(Ghost ghost : ghosts) {
     			if( (ghost != null) && (ghost.isClicked(e)) ) {
         			ghost.reactToClicked();
+        			return;
         			/*  TODO: move this somewhere else
         			if(hasGhostJustDied) {
         				handleGhostDeath(ghost);
@@ -181,6 +265,7 @@ public class GameEngine extends Activity {
     		}
     		
     		backgroundEyes.handleClick(e);
+    		moon.handleClick(e);
     	}
     	
     	

@@ -3,10 +3,14 @@ package timforce.ghosts;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.Log;
+import android.view.MotionEvent;
 
 
 public class Moon {
+	private final static String TAG="Moon";
 	private static final int moonWidth = 50;
 	private static final int moonHeight = 50;
 	private static int moonX = 300;
@@ -22,6 +26,7 @@ public class Moon {
 	private static final int moonColor = Color.argb(255, 255, 255, 100);
 	private static final int rightPadding = moonWidth + 5;
 	private static int bgColor = 0;
+	private static int moonPopCounter = 0;
 	
 	
 	public Moon(int screenWidth, int bgColor) {
@@ -31,6 +36,7 @@ public class Moon {
 		moonPaint.setAntiAlias(true);
 		moonShadowPaint.setColor(bgColor);
 		moonShadowPaint.setAntiAlias(true);
+		moonPopCounter = 0;
 	}
 	
 	
@@ -38,14 +44,43 @@ public class Moon {
 		int canvasWidth = canvas.getWidth();
 		moonX = canvasWidth - rightPadding;
 		
-		// draw moon
-		moonRectF.set(moonX, moonY, (moonX + moonWidth), (moonY + moonHeight));
-		canvas.drawArc(moonRectF, 0f, 360f, true, moonPaint);
+		if(moonPopCounter == 0) {
+			// draw moon, not popped yet
+			// draw moon
+			moonRectF.set(moonX, moonY, (moonX + moonWidth), (moonY + moonHeight));
+			canvas.drawArc(moonRectF, 0f, 360f, true, moonPaint);
 		
-		// draw moon shadow
-		moonShadowRectF.set(moonX + moonShadowOffsetX, moonY + moonShadowOffsetY, (moonX + moonWidth + moonShadowOffsetX), (moonY + moonHeight + moonShadowOffsetY));
-		canvas.drawArc(moonShadowRectF, 0, 360f, true, moonShadowPaint);		
+			// draw moon shadow
+			moonShadowRectF.set(moonX + moonShadowOffsetX, moonY + moonShadowOffsetY, (moonX + moonWidth + moonShadowOffsetX), (moonY + moonHeight + moonShadowOffsetY));
+			canvas.drawArc(moonShadowRectF, 0, 360f, true, moonShadowPaint);		
+		} else if(moonPopCounter < 30) {
+			// moon is being popped
+			moonRectF.set(moonX - (moonPopCounter*10), moonY, (moonX + moonWidth + (moonPopCounter*10)), (moonY + moonHeight + (moonPopCounter*10)));
+			canvas.drawArc(moonRectF, 0f, 360f, true, moonPaint);			
+		} else {
+			// do not draw if popped
+		}
+
 	}
+	
+	
+	public void update() {
+		if(moonPopCounter > 0) {
+			moonPopCounter++;
+		}
+	}
+	
+	
+	public void handleClick(MotionEvent e) {
+		Log.d(TAG, "Moon - handling click ...");
+		if( (moonX < e.getX()) && ((moonX + moonWidth) > e.getX()) ) {
+			if( (moonY < e.getY()) && ((moonY + moonHeight) > e.getY()) ) {
+				moonPopCounter = 1;
+			}
+		}
+		
+	}
+
 
 }
 
