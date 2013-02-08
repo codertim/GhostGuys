@@ -37,7 +37,7 @@ public class GameEngine extends Activity {
 	static GameEngine gameEngine = null;
 	static Moon moon = null;
 	static BackgroundEyes backgroundEyes = null;
-	final static int ghostSplitApartOffset = 50;
+	final static int ghostSplitApartOffset = 100;
 	static int updateCounter = 0;
 	static boolean isGameLevelDone = false;
 	int levelDoneCounter = 0;

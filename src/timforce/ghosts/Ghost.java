@@ -50,7 +50,7 @@ public class Ghost  {
 		bgPaint.setColor(bgColor);
 		eyePaint.setColor(Color.BLUE);
 		this.posX += (int) (Math.random() * 200);
-		this.posY += (int) (Math.random() * 200);
+		this.posY += (int) (Math.random() * 400);
 	}
 	
 	
