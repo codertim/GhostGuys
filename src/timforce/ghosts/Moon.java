@@ -1,16 +1,20 @@
 package timforce.ghosts;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 
 
 public class Moon {
 	private final static String TAG="Moon";
+	private static MediaPlayer mPlayer = new MediaPlayer();
 	private static final int moonWidth = 50;
 	private static final int moonHeight = 50;
 	private static int moonX = 300;
@@ -28,9 +32,10 @@ public class Moon {
 	private static int bgColor = 0;
 	private static int moonPopCounter = 0;
 	private static boolean isPopped = false;
+	private static Context context = null;
 	
 	
-	public Moon(int screenWidth, int bgColor) {
+	public Moon(int screenWidth, int bgColor, Context context) {
 		// this.moonX = screenWidth - moonWidth - 50;  TODO: remove
 		this.bgColor = bgColor;
 		moonPaint.setColor(moonColor);
@@ -39,6 +44,7 @@ public class Moon {
 		moonShadowPaint.setAntiAlias(true);
 		moonPopCounter = 0;
 		this.isPopped = false;
+		this.context = context;
 	}
 	
 	
@@ -74,11 +80,37 @@ public class Moon {
 			
 			if(moonPopCounter == 30) {
 				setIsPopped(true);
+				playSoundWhenPop();
 			}
 		}
 		
 	}
 	
+	
+	
+	// sound for smaller objects, such as background eyes
+	// Sound from sound bible: http://soundbible.com/1151-Grenade.html
+	//   License: Attribution 3.0
+	//   Recorded by Mike Koenig
+	private void playSoundWhenPop() {
+		if(mPlayer != null) {
+			mPlayer.release();
+		}
+		
+		mPlayer = MediaPlayer.create(context, R.raw.gren_sound);
+		((GameEngine) context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		// mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		
+		try {
+			// mPlayer.reset();   mPlayer.prepare();
+			mPlayer.start();
+			// mPlayer.release();
+		} catch(Exception e) {
+			Log.e(TAG, "ERROR tring to play moon pop - message=" + e.getMessage());
+		}
+
+	}
+ 		
 	
 	
 	public void handleClick(MotionEvent e) {

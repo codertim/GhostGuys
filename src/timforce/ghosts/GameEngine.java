@@ -115,7 +115,7 @@ public class GameEngine extends Activity {
     		this.context = context;
     		Log.d(TAG, "CONSTRUCTOR: GraphicsView");
     		// ghost = new Ghost(screenWidth, screenHeight, bgColor);
-    		moon  = new Moon(screenWidth, bgColor);
+    		moon  = new Moon(screenWidth, bgColor, context);
     		backgroundEyes = new BackgroundEyes();
     	}
     	
