@@ -63,7 +63,7 @@ public class Moon {
 			canvas.drawArc(moonShadowRectF, 0, 360f, true, moonShadowPaint);		
 		} else if(moonPopCounter < 30) {
 			// moon is being popped
-			moonRectF.set(moonX - (moonPopCounter*10), moonY, (moonX + moonWidth + (moonPopCounter*10)), (moonY + moonHeight + (moonPopCounter*10)));
+			moonRectF.set(moonX - (moonPopCounter*20), moonY, (moonX + moonWidth + (moonPopCounter*20)), (moonY + moonHeight + (moonPopCounter*20)));
 			canvas.drawArc(moonRectF, 0f, 360f, true, moonPaint);			
 		} else {
 			// do not draw if popped
@@ -89,15 +89,21 @@ public class Moon {
 	
 	
 	// sound for smaller objects, such as background eyes
+	//
 	// Sound from sound bible: http://soundbible.com/1151-Grenade.html
 	//   License: Attribution 3.0
 	//   Recorded by Mike Koenig
+	//
+	// Sound from sound bible: http://soundbible.com/1986-Bomb-Exploding.html
+	//   License: Attribution 3.0
+	//   Recorded by Sound Explorer
 	private void playSoundWhenPop() {
 		if(mPlayer != null) {
 			mPlayer.release();
 		}
 		
-		mPlayer = MediaPlayer.create(context, R.raw.gren_sound);
+		// mPlayer = MediaPlayer.create(context, R.raw.gren_sound);
+		mPlayer = MediaPlayer.create(context, R.raw.bmb_expl);
 		((GameEngine) context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		// mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		
