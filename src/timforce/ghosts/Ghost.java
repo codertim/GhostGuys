@@ -253,7 +253,7 @@ public class Ghost  {
 		numTimesTouched++;
 		changeColor();
 				
-		if(numTimesTouched >= 2) {
+		if(numTimesTouched >= 1) {
 			// kill off if too small
 			isDying = true;
 		} 
