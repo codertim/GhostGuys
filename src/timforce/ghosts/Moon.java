@@ -78,9 +78,12 @@ public class Moon {
 				moonPopCounter++;
 			}
 			
+			if(moonPopCounter==2) {
+				playSoundWhenPop();
+			}
+			
 			if(moonPopCounter == 30) {
 				setIsPopped(true);
-				playSoundWhenPop();
 			}
 		}
 		
