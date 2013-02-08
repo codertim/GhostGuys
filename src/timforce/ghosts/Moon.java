@@ -27,6 +27,7 @@ public class Moon {
 	private static final int rightPadding = moonWidth + 5;
 	private static int bgColor = 0;
 	private static int moonPopCounter = 0;
+	private static boolean isPopped = false;
 	
 	
 	public Moon(int screenWidth, int bgColor) {
@@ -37,6 +38,7 @@ public class Moon {
 		moonShadowPaint.setColor(bgColor);
 		moonShadowPaint.setAntiAlias(true);
 		moonPopCounter = 0;
+		this.isPopped = false;
 	}
 	
 	
@@ -65,10 +67,18 @@ public class Moon {
 	
 	
 	public void update() {
-		if(moonPopCounter > 0) {
-			moonPopCounter++;
+		if(!getIsPopped()) {
+			if(moonPopCounter > 0) {
+				moonPopCounter++;
+			}
+			
+			if(moonPopCounter == 30) {
+				setIsPopped(true);
+			}
 		}
+		
 	}
+	
 	
 	
 	public void handleClick(MotionEvent e) {
@@ -81,6 +91,10 @@ public class Moon {
 		
 	}
 
+	
+	public boolean getIsPopped() { return this.isPopped; }
+	
+	public void setIsPopped(boolean isPopped) { this.isPopped = isPopped; }
 
 }
 

@@ -81,7 +81,7 @@ public class Ghost  {
 	}
 	
 
-	public void drawOnCanvas(Canvas canvas) {
+	public void drawOnCanvas(Canvas canvas, boolean isMoonPopped) {
 		drawCounter++;
 		if((drawCounter % 2000) == 0) {
 			Log.d(TAG, "Canvas Width = " + canvas.getWidth() + "     Height = " + canvas.getHeight());
@@ -89,16 +89,19 @@ public class Ghost  {
 		}
 		
 		if(!isDead && !isDying) {
-			// body
-			canvas.drawRect(posX-width/2, posY-height, posX + width/2, posY, gPaint);
+			// when moon is popped then we will not show body
+			if(!isMoonPopped) {
+				// body
+				canvas.drawRect(posX-width/2, posY-height, posX + width/2, posY, gPaint);
 			
-			// bottom
-			RectF bottomOval = new RectF(posX - width/2, posY-bottomCurvature, posX + width/2, posY+bottomCurvature);
-			canvas.drawOval(bottomOval, bgPaint);
+				// bottom
+				RectF bottomOval = new RectF(posX - width/2, posY-bottomCurvature, posX + width/2, posY+bottomCurvature);
+				canvas.drawOval(bottomOval, bgPaint);
 			
-			// head
-			RectF oval = new RectF(posX-width/2,posY-height-headHeight,posX+width/2,posY-height+headHeight);
-			canvas.drawArc(oval, 180f, 180f, false, gPaint);
+				// head
+				RectF oval = new RectF(posX-width/2,posY-height-headHeight,posX+width/2,posY-height+headHeight);
+				canvas.drawArc(oval, 180f, 180f, false, gPaint);
+			}
 			
 			// eyes
 			canvas.drawCircle(posX-eyeOffset, posY-height-3, eyeRadius, eyePaint);

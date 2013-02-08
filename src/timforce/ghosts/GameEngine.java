@@ -53,6 +53,7 @@ public class GameEngine extends Activity {
     	isGameLevelDone = false;
     	updateCounter = 0;
 		ghosts[0] = new Ghost(screenWidth, screenHeight, bgColor);
+
 		firstGhost = ghosts[0];
 
         // setContentView(R.layout.game_engine);
@@ -157,7 +158,7 @@ public class GameEngine extends Activity {
     		
     		for(int i=0; i < ghosts.length; i++) {
     			if(ghosts[i] != null)
-    				ghosts[i].drawOnCanvas(canvas);
+    				ghosts[i].drawOnCanvas(canvas, moon.getIsPopped());
     		}
     	}
     	
@@ -165,8 +166,9 @@ public class GameEngine extends Activity {
     	
     	private void drawBackgroundObjects(Canvas canvas) {
     		moon.draw(canvas);
-    		backgroundEyes.drawSelf(canvas);
-    		// draw visible moon
+    		if(!moon.getIsPopped()) {
+    			backgroundEyes.drawSelf(canvas);
+    		}
     	}
     	
     	
