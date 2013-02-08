@@ -97,20 +97,25 @@ public class Moon {
 	// Sound from sound bible: http://soundbible.com/1986-Bomb-Exploding.html
 	//   License: Attribution 3.0
 	//   Recorded by Sound Explorer
+	
+	// Sound from http://soundbible.com/1983-Atomic-Bomb.html
+	//   License: Attribution 3.0
+	//   Recorded by Sound Explorer
+
 	private void playSoundWhenPop() {
 		if(mPlayer != null) {
 			mPlayer.release();
 		}
 		
 		// mPlayer = MediaPlayer.create(context, R.raw.gren_sound);
-		mPlayer = MediaPlayer.create(context, R.raw.bmb_expl);
+		// mPlayer = MediaPlayer.create(context, R.raw.bmb_expl);
+		mPlayer = MediaPlayer.create(context, R.raw.atm_bmb);
+
 		((GameEngine) context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		// mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		
 		try {
-			// mPlayer.reset();   mPlayer.prepare();
 			mPlayer.start();
-			// mPlayer.release();
 		} catch(Exception e) {
 			Log.e(TAG, "ERROR tring to play moon pop - message=" + e.getMessage());
 		}
