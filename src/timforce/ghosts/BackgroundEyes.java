@@ -30,7 +30,9 @@ public class BackgroundEyes {
 		
 		// initialize eyes to active
 		for(int i=0; i < isEyesActive.length; i++) {
-			isEyesActive[i] = true;
+			isEyesActive[i]    = true;
+			eyesJustPopped[i]  = false;
+			eyesBigCounters[i] = 0;
 		}
 	}
 	
