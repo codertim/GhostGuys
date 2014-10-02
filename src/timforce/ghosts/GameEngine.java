@@ -87,8 +87,9 @@ public class GameEngine extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "clicked exit on dialog");
-				Intent i = new Intent(gameEngine, GhostGuysActivity.class);
-				startActivity(i);
+				System.exit(0);
+				// Intent i = new Intent(gameEngine, GhostGuysActivity.class);
+				// startActivity(i);
 			}
         });
     	
